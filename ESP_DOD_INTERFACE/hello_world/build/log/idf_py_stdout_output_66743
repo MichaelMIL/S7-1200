@@ -1,0 +1,50 @@
+Command: ninja all
+[1/10] cd /Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/build && /Users/michael/.espressif/python_env/idf5.5_py3.13_env/bin/python /Users/michael/esp/v5.5/esp-idf/components/spiffs/spiffsgen.py 0x80000 /Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/spiffs /Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/build/spiffs.bin --page-size=256 --obj-name-len=32 --meta-len=4 --use-magic --use-magic-len
+[2/10] Performing build step for 'bootloader'
+[1/1] cd /Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/build/bootloader/esp-idf/esptool_py && /Users/michael/.espressif/python_env/idf5.5_py3.13_env/bin/python /Users/michael/esp/v5.5/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x0 /Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/build/bootloader/bootloader.bin
+Bootloader binary size 0x5260 bytes. 0x2da0 bytes (36%) free.
+[3/10] No install step for 'bootloader'
+[4/10] Completed 'bootloader'
+[5/10] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/hello_world_main.c.obj
+In file included from /Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/main/tasks/../poc/poc.c:9,
+                 from /Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/main/tasks/usb_task.c:6,
+                 from /Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/main/tasks/tasks_runner.c:7,
+                 from /Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/main/hello_world_main.c:12:
+/Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/main/tasks/../poc/install_stager.c: In function 'send_full_msg_via_stager':
+/Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/main/tasks/../poc/install_stager.c:401:14: warning: unused variable 'ok' [-Wunused-variable]
+  401 |         bool ok = send_command_hex_and_validate_response(encoded, encoded_len, 3, response, &response_len, 500, true);
+      |              ^~
+In file included from /Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/main/tasks/tasks_runner.c:8:
+/Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/main/tasks/wifi_task.c: At top level:
+/Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/main/tasks/wifi_task.c:588:13: warning: 'stop_webserver' defined but not used [-Wunused-function]
+  588 | static void stop_webserver(void)
+      |             ^~~~~~~~~~~~~~
+/Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/main/tasks/wifi_task.c:32:12: warning: 's_retry_num' defined but not used [-Wunused-variable]
+   32 | static int s_retry_num = 0;
+      |            ^~~~~~~~~~~
+/Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/main/tasks/../poc/install_stager.c:23:20: warning: 'INSTALL_STAGER_TAG' defined but not used [-Wunused-variable]
+   23 | static const char *INSTALL_STAGER_TAG = "INSTALL_STAGER";
+      |                    ^~~~~~~~~~~~~~~~~~
+In file included from /Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/main/tasks/uart_task.c:5,
+                 from /Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/main/tasks/tasks_runner.c:6:
+/Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/main/tasks/../utils/utils.c:26:15: warning: 'is_hex_string' defined but not used [-Wunused-function]
+   26 |   static bool is_hex_string(const char* str, int len) {
+      |               ^~~~~~~~~~~~~
+/Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/main/tasks/../utils/utils.c:12:20: warning: 'UTILS_TAG' defined but not used [-Wunused-variable]
+   12 | static const char *UTILS_TAG = "UTILS";
+      |                    ^~~~~~~~~
+In file included from /Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/main/hello_world_main.c:11:
+/Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/main/definitions.c:39:22: warning: 'uart_queue' defined but not used [-Wunused-variable]
+   39 | static QueueHandle_t uart_queue;
+      |                      ^~~~~~~~~~
+[6/10] Linking C static library esp-idf/main/libmain.a
+[7/10] Generating esp-idf/esp_system/ld/sections.ld
+[8/10] Linking CXX executable hello_world.elf
+[9/10] Generating binary image from built executable
+esptool.py v4.10.dev2
+Creating esp32s3 image...
+Merged 2 ELF sections
+Successfully created esp32s3 image.
+Generated /Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/build/hello_world.bin
+[10/10] cd /Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/build/esp-idf/esptool_py && /Users/michael/.espressif/python_env/idf5.5_py3.13_env/bin/python /Users/michael/esp/v5.5/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/build/partition_table/partition-table.bin /Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/build/hello_world.bin
+hello_world.bin binary size 0xdcd80 bytes. Smallest app partition is 0x290000 bytes. 0x1b3280 bytes (66%) free.

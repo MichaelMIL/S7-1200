@@ -1,0 +1,60 @@
+$ sh client.sh --switch-power --powersupply-delay=1 test
+Remaining arguments: --switch-power --powersupply-delay=1 test
+[+] Opening connection to localhost on port 1238: Done
+Turning off power supply and sleeping for 1 seconds
+[+] Turned off power supply, sleeping
+[+] Turned on power supply again
+[+] Successfully turned on power supply
+Looping now
+/home/michael/Downloads/SiemensS7-Bootloader-master/client.py:619: BytesWarning: Text is not bytes; assuming ASCII, no guarantees. See https://docs.pwntools.com/#bytes
+  s.send(pad + magic)
+b'\x05-C\xf0' 
+Done.
+[*] Closed connection to localhost port 1238
+
+
+
+
+This is sending the magic packet
+> 2025/09/05 17:13:30.000907126  length=4 from=45 to=48
+ 41 41 41 41                                      AAAA
+--
+> 2025/09/05 17:13:30.000907174  length=4 from=49 to=52
+ 4d 46 47 54                                      MFGT
+--
+> 2025/09/05 17:13:30.000907196  length=1 from=53 to=53
+ 31                                               1
+–.
+And this is the response - looks not compleat but resembles the expected response (“-CPU) 
+< 2025/09/05 17:13:30.000912900  length=4 from=0 to=3
+ 05 2d 43 f0                                      .-C.
+Got also this result:
+< 2025/09/05 17:20:04.000696201  length=4 from=0 to=3
+ 05 2d 43 50                                      .-CP
+
+< 2025/09/05 17:50:07.000360705  length=4 from=2 to=5
+< 2025/09/05 17:50:07.000360705  length=2 from=3 to=4
+ 05 2d 55 43 e6 50                                                                                .  -CUP.
+
+--
+--
+2025/09/05 17:50:07 socat[71666] E write(6, 0x587026824000, 4): Connection reset by peer
+< 2025/09/05 17:51:45.000458584  length=4 from=4 to=7
+ 55 05 e6 2d    43    50                                                                       U   .  
+.--
+-CP
+--
+2025/09/05 17:51:45 socat[71967] E write(6, 0x587026824000, 4): Connection reset by peer
+
+< 2025/09/05 17:52:54.000887050  length=6 from=0 to=5
+ 05 2d 43 50 55 e6                                .-CPU.
+–
+
+> 2025/09/05 18:03:12.000559807  length=9 from=27 to=35
+ 41 41 41 41 4d 46 47 54 31                       AAAAMFGT1
+--
+< 2025/09/05 18:03:12.000566082  length=6 from=0 to=5
+ 05 2d 43 50 55 e6                                .-CPU.
+–
+
+

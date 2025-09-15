@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html><head>
+<title>ESP32-S7 Bootloader Control</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; background-color: #f0f0f0; }
+.container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+h1 { color: #333; text-align: center; }
+.section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+button { background-color: #4CAF50; color: white; padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
+button:hover { background-color: #45a049; }
+input[type='text'], input[type='file'], select { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; }
+textarea { width: 100%; height: 100px; padding: 8px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; }
+.command-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin: 10px 0; }
+.command-buttons button { padding: 8px 12px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; transition: background 0.3s; }
+.command-buttons button:hover { background: #0056b3; }
+.command-buttons button:active { background: #004085; }
+.output { background-color: #f9f9f9; padding: 10px; border-radius: 4px; margin: 10px 0; white-space: pre-wrap; font-family: monospace; }
+.status { padding: 10px; margin: 10px 0; border-radius: 4px; }
+.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+</style>
+</head><body>
+<div class='container'>
+<h1>ESP32-S7 Bootloader Control Panel</h1>
+
+<div class='section'>
+<h3>System Status</h3>
+<div id='status' class='status'>Connecting...</div>
+<button onclick='getStatus()'>Refresh Status</button>
+</div>
+
+<div class='section'>
+<h3>Command Execution</h3>
+<input type='text' id='command' placeholder='Enter command manually or use buttons below' />
+<button onclick='executeCommand()'>Execute Command</button>
+<div class='command-buttons'>
+  <button onclick='runCommand("establish_handshake")'>Establish Handshake</button>
+  <button onclick='runCommand("get_bl_version")'>Get BL Version</button>
+  <button onclick='runCommand("status")'>Get Status</button>
+  <button onclick='runCommand("restart_plc")'>Restart PLC</button>
+  <button onclick='runCommand("power_off_plc")'>Power Off PLC</button>
+  <button onclick='runCommand("power_on_plc")'>Power On PLC</button>
+</div>
+<div id='commandOutput' class='output'></div>
+</div>
+
+<div class='section'>
+<h3>File Upload</h3>
+<input type='file' id='fileInput' accept='.txt' />
+<button onclick='uploadFile()'>Upload to SPIFFS</button>
+<div id='uploadStatus' class='output'></div>
+</div>
+
+<div class='section'>
+<h3>SPIFFS Files</h3>
+<button onclick='listFiles()'>List Files</button>
+<button onclick='refreshFiles()'>Refresh</button>
+<div id='filesList' class='output'></div>
+</div>
+
+<div class='section'>
+<h3>File Operations</h3>
+<select id='fileSelect' onchange='updateFileName()'>
+  <option value=''>Select a file...</option>
+</select>
+<input type='text' id='fileName' placeholder='Or enter filename manually' />
+<button onclick='viewFile()'>View File</button>
+<button onclick='downloadFile()'>Download File</button>
+<button onclick='deleteFile()'>Delete File</button>
+<div id='fileContent' class='output'></div>
+</div>
+
+<div class='section'>
+<h3>File Transmission via UART</h3>
+<select id='transmitFileSelect' onchange='updateTransmitFileName()'>
+  <option value=''>Select a file to transmit...</option>
+</select>
+<input type='text' id='transmitFileName' placeholder='Or enter filename manually' />
+<button onclick='transmitFile()'>Send File via UART</button>
+<div id='transmitStatus' class='output'></div>
+</div>
+
+</div>
+
+<script>
+function getStatus() {
+  fetch('/api/status')
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('status').innerHTML = 'WiFi Connected: ' + data.wifi_connected + '<br>' +
+        'Free Heap: ' + data.free_heap + ' bytes<br>' +
+        'UART Status: TX=' + data.uart_tx + ', RX=' + data.uart_rx + ', Baud=' + data.uart_baud;
+    });
+}
+
+function executeCommand() {
+  const command = document.getElementById('command').value;
+  if (!command) return;
+  runCommand(command);
+}
+
+function runCommand(command) {
+  // Update the input field to show the command being executed
+  document.getElementById('command').value = command;
+  
+  // Show loading state
+  document.getElementById('commandOutput').innerHTML = 'Executing command: ' + command + '...';
+  
+  fetch('/api/command', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ command: command })
+  })
+  .then(response => response.json())
+  .then(data => {
+    document.getElementById('commandOutput').innerHTML = data.result;
+  })
+  .catch(error => {
+    document.getElementById('commandOutput').innerHTML = 'Error executing command: ' + error.message;
+  });
+}
+
+function uploadFile() {
+  const fileInput = document.getElementById('fileInput');
+  const file = fileInput.files[0];
+  if (!file) { alert('Please select a file'); return; }
+  const formData = new FormData();
+  formData.append('file', file);
+  fetch('/upload', { method: 'POST', body: formData })
+  .then(response => response.text())
+  .then(data => {
+    document.getElementById('uploadStatus').innerHTML = data;
+    listFiles();
+  });
+}
+
+function listFiles() {
+  fetch('/api/files')
+  .then(response => response.json())
+  .then(data => {
+    let html = 'Files in SPIFFS:<br>';
+    let selectHtml = '<option value="">Select a file...</option>';
+    let transmitSelectHtml = '<option value="">Select a file to transmit...</option>';
+    
+    data.files.forEach(file => {
+      html += '- ' + file.name + ' (' + file.size + ' bytes)<br>';
+      selectHtml += '<option value="' + file.name + '">' + file.name + ' (' + file.size + ' bytes)</option>';
+      transmitSelectHtml += '<option value="' + file.name + '">' + file.name + ' (' + file.size + ' bytes)</option>';
+    });
+    
+    document.getElementById('filesList').innerHTML = html;
+    document.getElementById('fileSelect').innerHTML = selectHtml;
+    document.getElementById('transmitFileSelect').innerHTML = transmitSelectHtml;
+  });
+}
+
+function updateFileName() {
+  const select = document.getElementById('fileSelect');
+  const input = document.getElementById('fileName');
+  input.value = select.value;
+}
+
+function viewFile() {
+  const fileName = document.getElementById('fileName').value;
+  if (!fileName) return;
+  fetch('/api/file?file=' + encodeURIComponent(fileName))
+  .then(response => response.text())
+    .then(data => {
+      document.getElementById('fileContent').innerHTML = data;
+    });
+}
+
+function downloadFile() {
+  const fileName = document.getElementById('fileName').value;
+  if (!fileName) return;
+  
+  // Create a download link
+  const downloadUrl = '/api/file?file=' + encodeURIComponent(fileName);
+  
+  // Create a temporary anchor element and trigger download
+  const link = document.createElement('a');
+  link.href = downloadUrl;
+  link.download = fileName;
+  link.style.display = 'none';
+  
+  // Add to DOM, click, and remove
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  // Show success message
+  document.getElementById('fileContent').innerHTML = 'Download started for: ' + fileName;
+}
+
+function deleteFile() {
+  const fileName = document.getElementById('fileName').value;
+  if (!fileName) return;
+  if (confirm('Delete file: ' + fileName + '?')) {
+    fetch('/api/delete?file=' + encodeURIComponent(fileName), { method: 'DELETE' })
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('fileContent').innerHTML = data;
+      listFiles();
+    });
+  }
+}
+
+function updateTransmitFileName() {
+  const select = document.getElementById('transmitFileSelect');
+  const input = document.getElementById('transmitFileName');
+  input.value = select.value;
+}
+
+function transmitFile() {
+  const fileName = document.getElementById('transmitFileName').value;
+  if (!fileName) {
+    alert('Please select or enter a filename');
+    return;
+  }
+  
+  // Show loading state
+  document.getElementById('transmitStatus').innerHTML = 'Transmitting file: ' + fileName + '...';
+  
+  fetch('/api/send_file', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ filename: fileName })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      document.getElementById('transmitStatus').innerHTML = 'SUCCESS: ' + data.result;
+    } else {
+      document.getElementById('transmitStatus').innerHTML = 'ERROR: ' + data.result;
+    }
+  })
+  .catch(error => {
+    document.getElementById('transmitStatus').innerHTML = 'Error transmitting file: ' + error.message;
+  });
+}
+
+function refreshFiles() { listFiles(); }
+
+// Auto-refresh status on page load
+window.onload = function() { getStatus(); listFiles(); };
+</script>
+</body></html>

@@ -1,0 +1,22 @@
+Hello from ESP32-S7 Bootloader!
+
+This is an example text file that can be uploaded to the ESP32's SPIFFS filesystem via WiFi.
+
+Features of the WiFi interface:
+- Web-based control panel
+- REST API for automation
+- File upload and management
+- Command execution
+- System status monitoring
+
+You can upload this file using:
+1. The web interface at http://192.168.4.1
+2. The Python client: python3 wifi_client.py upload example_file.txt
+3. Any HTTP client that supports multipart/form-data uploads
+
+The ESP32 will store this file in its SPIFFS partition and make it available for download or viewing through the web interface.
+
+Happy hacking!
+
+
+

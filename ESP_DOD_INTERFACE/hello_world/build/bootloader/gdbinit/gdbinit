@@ -1,0 +1,2 @@
+source /Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/build/bootloader/gdbinit/symbols
+source /Users/michael/Documents/github_private/S7-1200/POCs/SiemensS7-Bootloader-master/tools/ESP_DOD/hello_world/build/bootloader/gdbinit/connect

@@ -1,0 +1,1 @@
+arm-linux-gnueabihf-as -EB -o tmp.elf stager.s && arm-linux-gnueabihf-objcopy -j .text -Obinary tmp.elf stager.bin && rm tmp.elf

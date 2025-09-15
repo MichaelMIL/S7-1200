@@ -1,0 +1,53 @@
+sh client.sh --switch-power --powersupply-delay=1 test
+Remaining arguments: --switch-power --powersupply-delay=1 test
+[+] Opening connection to localhost on port 1238: Done
+Turning off power supply and sleeping for 1 seconds
+[+] Turned off power supply, sleeping
+[+] Turned on power supply again
+[+] Successfully turned on power supply
+Looping now
+/home/michael/Downloads/SiemensS7-Bootloader-master/client.py:619: BytesWarning: Text is not bytes; assuming ASCII, no guarantees. See https://docs.pwntools.com/#bytes
+  s.send(pad + magic)
+[+] Got connection
+Traceback (most recent call last):
+  File "/home/michael/Downloads/SiemensS7-Bootloader-master/client.py", line 636, in <module>
+    main()
+  File "/home/michael/Downloads/SiemensS7-Bootloader-master/client.py", line 629, in main
+    handle_conn(s, args.action, args)
+  File "/home/michael/Downloads/SiemensS7-Bootloader-master/client.py", line 454, in handle_conn
+    answ = recv_packet(r)
+           ^^^^^^^^^^^^^^
+  File "/home/michael/Downloads/SiemensS7-Bootloader-master/client.py", line 131, in recv_packet
+    if calc_checksum_byte(answ[:-1]) != answ[-1]:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/michael/Downloads/SiemensS7-Bootloader-master/client.py", line 88, in calc_checksum_byte
+    return struct.pack("<i", -sum(map(ord, incoming[:ord(incoming[0])])))[0]
+                                                     ^^^^^^^^^^^^^^^^
+TypeError: ord() expected string of length 1, but int found
+[*] Closed connection to localhost port 1238
+
+
+[+] Successfully turned on power supply
+######### ANS:b'\x05-CPU\xe6'
+[+] Got connection
+[+] Got special access greeting: b'-CPU' [b'2d435055']
+[*] sending packet: 0200fe
+
+
+
+
+
++] Got connection
+[+] Got special access greeting: b'\x05-CPU\xf7' [b'052d435055f7']
+[*] Attempting to get version (attempt 1/10)
+[*] Sending version request (hook_ind=0)
+[*] sending packet: 0200fe
+[*] Waiting for version response...
+Checksum validity failed. Got: b'\x05-CPU\xf7' [052d435055f7]
+[*] No response received for version request
+[*] Version attempt 1 failed (timeout or no response)
+[*] Attempting to get version (attempt 2/10)
+[*] Sending version request (hook_ind=0)
+[*] sending packet: 0200fe
+[*] Waiting for version response...
+
